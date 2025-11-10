@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  babelia-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - SMTP_SERVER=${SMTP_SERVER}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USERNAME=${SMTP_USERNAME}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - ALERT_EMAIL=${ALERT_EMAIL}
+      - CLIP_MODEL=${CLIP_MODEL:-ViT-B/32}
+      - SIGNIFICANCE_THRESHOLD=${SIGNIFICANCE_THRESHOLD:-0.75}
+      - MAX_IMAGES_PER_RUN=${MAX_IMAGES_PER_RUN:-1000}
+    volumes:
+      - ./discoveries:/app/discoveries
+      - ./logs:/app/logs
+      - ./models:/app/models
+      - ./babelia_discoveries.db:/app/babelia_discoveries.db
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+        reservations:
+          memory: 2G
